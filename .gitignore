@@ -1,0 +1,10 @@
+.vscode
+.cache
+build
+
+*.o
+
+test.bf
+
+bfc/bfc
+
