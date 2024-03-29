@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS=-std=c89 -O2 -Wall -Wextra -Werror -pedantic -ansi
+CFLAGS=-std=c89 -O2 -Wall -Wextra -Werror -ansi
 
 OBJ_BFC=\
 bfc/b_compiler.o \

@@ -1,10 +1,7 @@
 #include <stdlib.h>
 
+#include "../shared/bfunc.h"
 #include "../shared/xmemory.h"
-
-typedef unsigned char  boolean;
-typedef unsigned char  uint8;
-typedef unsigned short uint16;
 
 #define BF_VER_MAJOR 0
 #define BF_VER_MINOR 1
@@ -33,29 +30,6 @@ BfArgsStrings *bf_arg_flag_compile();
 const char *bf_arg_flag_output();
 
 /* ==================== Compiler ==================== */
-
-/* BrainFunc Opcodes */
-typedef enum {
-	BF_BYTE_NONE = 0,
-	BF_BYTE_ADD,
-	BF_BYTE_SUB,
-	BF_BYTE_LEFT,
-	BF_BYTE_RIGHT,
-	BF_BYTE_LOOP_START,
-	BF_BYTE_LOOP_END,
-	BF_BYTE_PRINT,
-	BF_BYTE_READ,
-	BF_BYTE_CALL,
-	BF_BYTE_RETURN
-} BfByte;
-
-typedef struct {
-	char  magic[4]; /* ASCII "BFUN" */
-	uint8 ver_maj;
-	uint8 ver_min;
-	uint  size;  /* code size after header */
-	uint  entry; /* entry point address */
-} __attribute__((packed)) BfExecHeader;
 
 /* compile ascii/utf-8 code to byte code the vm can execute.
  * byte code starts with header.
@@ -88,4 +62,4 @@ boolean bf_function_reg_add(BfFunctionRegister **func_reg, char *name,
 
 /* search a function in the function register */
 const BfFunction *bf_function_reg_search(const BfFunctionRegister *func_reg,
-					 char		      *name);
+					 char			  *name);
