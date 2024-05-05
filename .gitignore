@@ -3,8 +3,9 @@
 build
 
 *.o
+*.bfe
 
 test.bf
 
 bfc/bfc
-
+bfvm/bfvm

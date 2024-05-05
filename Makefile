@@ -6,6 +6,10 @@ bfc/b_compiler.o \
 bfc/b_func_reg.o \
 bfc/b_main.o
 
+OBJ_BFVM=\
+bfvm/b_main.o\
+bfvm/b_vm.o
+
 OBJ_SHARED=\
 shared/x_memory.o
 
@@ -16,9 +20,12 @@ shared/x_memory.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 bfc: $(OBJ_BFC) $(OBJ_SHARED)
-	$(CC) $(OBJ_BFC) $(OBJ_SHARED) -o bfc/$@
+	$(CC) $(OBJ_BFC) $(OBJ_SHARED) -o $@/$@
 
-all: bfc
+bfvm: $(OBJ_BFVM) $(OBJ_SHARED)
+	$(CC) $(OBJ_BFVM) $(OBJ_SHARED) -o $@/$@
+
+all: bfc bfvm
 
 clean:
-	rm $(OBJ_BFC) $(OBJ_SHARED) bfc/bfc
+	rm $(OBJ_BFC) $(OBJ_BFVM) $(OBJ_SHARED) bfc/bfc bfvm/bfvm
