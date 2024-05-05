@@ -13,8 +13,7 @@ bfvm/b_vm.o
 OBJ_SHARED=\
 shared/x_memory.o
 
-.PHONY: clean
-.DEFAULT: all
+all: bfc bfvm
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -25,7 +24,6 @@ bfc: $(OBJ_BFC) $(OBJ_SHARED)
 bfvm: $(OBJ_BFVM) $(OBJ_SHARED)
 	$(CC) $(OBJ_BFVM) $(OBJ_SHARED) -o $@/$@
 
-all: bfc bfvm
-
+.PHONY:
 clean:
 	rm $(OBJ_BFC) $(OBJ_BFVM) $(OBJ_SHARED) bfc/bfc bfvm/bfvm
