@@ -11,7 +11,7 @@ bf_function_internal_strcmp(const char *str1, const char *str2)
 		str2++;
 	}
 
-	return (*str1 == 0 && *str2 == 0);
+	return (!(*str1) && !(*str2));
 }
 
 BfFunctionRegister *

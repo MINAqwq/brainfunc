@@ -1,5 +1,7 @@
 #include "types.h"
 
+#include <stdlib.h>
+
 /* ==================== xMemory ==================== */
 
 /* debug informations */

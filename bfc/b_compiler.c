@@ -215,8 +215,6 @@ bf_comp_map(const char *ascii_code, uint size, uint8 *buffer_compiled,
 		/* append address */
 		*((uint *)buffer_compiled) = fn->addr;
 		buffer_compiled += BF_SIZE_ADDRESS;
-
-		printf("buffer = %08X\n", fn->addr);
 	}
 
 	return buffer_compiled;
@@ -227,7 +225,7 @@ bf_comp_compile(const char *code, uint size)
 {
 	BfFunctionRegister *reg;
 	BfExecHeader	    header;
-	uint8	      *buffer_compiled;
+	uint8		   *buffer_compiled;
 	uint		    code_size;
 
 	reg = bf_function_reg_create();

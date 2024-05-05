@@ -3,16 +3,6 @@
 #include "../shared/bfunc.h"
 #include "../shared/xmemory.h"
 
-#define BF_VER_MAJOR 0
-#define BF_VER_MINOR 1
-
-#define BF_SIZE_ADDRESS sizeof(uint)
-#define BF_SIZE_OPCODE	sizeof(uint8)
-
-#define BF_FUNCTION_NAME_LEN_MAX 47
-
-#define BF_NAME_ENTRY "main"
-
 /* ==================== Argparse ==================== */
 
 typedef struct {
