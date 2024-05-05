@@ -4,7 +4,7 @@ Optimized Brainfuck with functions.
 
 ## Build
 ```sh
-make
+make all
 ```
 
 yeah, thats it
