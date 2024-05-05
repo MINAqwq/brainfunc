@@ -57,7 +57,7 @@ Some of the sizes are architecture depended. Yes, compiled Brainfunc is not inte
 | Name | Description | Type/Size |
 |------|-------------|---------------|
 | magic | 4 ascii chars ("BFUN") | char[4] |
-| ver_major| Major Version | uint8 |
+| ver_major | Major Version | uint8 |
 | ver_minor | Minor Version | uint8 |
 | size | size of code without header | int |
 | entry | offset of entry point | int |
