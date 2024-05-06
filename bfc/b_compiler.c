@@ -61,6 +61,13 @@ bf_comp_resolve_addr(BfFunctionRegister **reg, const char *code, uint size,
 			continue;
 		}
 
+		if (code[i] == ';') {
+			while (++i < size && code[i] != '\n') {
+			}
+
+			continue;
+		}
+
 		if (code[i] == '$') {
 			/* skip $ */
 			i++;
@@ -170,10 +177,17 @@ bf_comp_map(const char *ascii_code, uint size, uint8 *buffer_compiled,
 			continue;
 		}
 
+		if (ascii_code[i] == ';') {
+			while (++i < size && ascii_code[i] != '\n') {
+			}
+
+			continue;
+		}
+
 		/* skip label definitions */
 		if (ascii_code[i] == '$') {
 			/* skip label */
-			while (ascii_code[i++] != '#') {
+			while (++i < size && ascii_code[i] != '#') {
 			}
 
 			continue;
@@ -184,8 +198,8 @@ bf_comp_map(const char *ascii_code, uint size, uint8 *buffer_compiled,
 
 		/* error handling */
 		if (tmp_op == BF_BYTE_NONE) {
-			fprintf(stderr, "error: failed to map -> 0x%02X\n",
-				ascii_code[i]);
+			fprintf(stderr, "error: failed to map -> 0x%02X (%c)\n",
+				ascii_code[i], ascii_code[i]);
 			exit(1);
 		}
 
