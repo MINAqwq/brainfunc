@@ -3,6 +3,7 @@
 build
 
 *.o
+*.bf
 *.bfe
 
 test.bf
