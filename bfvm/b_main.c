@@ -1,6 +1,7 @@
 #include "bfvm.h"
 
 #include <stdio.h>
+#include <string.h>
 
 int
 main(int argc, char **argv)
@@ -13,11 +14,23 @@ main(int argc, char **argv)
 
 	vm = bfvm_create();
 
-	if (bfvm_code_load_from_file(&vm, argv[1])) {
-		fprintf(stderr, "failed loading %s\n", argv[1]);
-		goto vm_del;
+	if (!strcmp(argv[1], "-")) {
+		if (!bfvm_code_load_from_stdin(&vm)) {
+			goto exec;
+		}
+
+		fputs("failed reading from stdin\n", stderr);
+		bfvm_delete(vm);
+		return 1;
 	}
 
+	if (bfvm_code_load_from_file(&vm, argv[1])) {
+		fprintf(stderr, "failed loading %s\n", argv[1]);
+		bfvm_delete(vm);
+		return 1;
+	}
+
+exec:
 	if (bfvm_exec(vm)) {
 		fprintf(stderr,
 			"==== RUNTIME ERROR ====\nIP: 0x%08X\nOP: 0x%02X\nMI: "
@@ -26,7 +39,6 @@ main(int argc, char **argv)
 			vm->index_memory, vm->index_callstack);
 	}
 
-vm_del:
 	bfvm_delete(vm);
 	return 0;
 }

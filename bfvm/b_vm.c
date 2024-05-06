@@ -1,6 +1,11 @@
 #include "bfvm.h"
 
+#include "../shared/bfunc.h"
+#include "../shared/vector.h"
+#include "../shared/xmemory.h"
+
 #include <stdio.h>
+#include <string.h>
 
 BfVm *
 bfvm_create()
@@ -20,11 +25,105 @@ bfvm_delete(BfVm *vm)
 }
 
 boolean
+bfvm_header_validate(BfVm **vm, BfExecHeader *header)
+{
+	if (header->magic[0] != 'B' || header->magic[1] != 'F' ||
+	    header->magic[2] != 'U' || header->magic[3] != 'N' ||
+	    header->entry >= header->size || header->ver_maj != BF_VER_MAJOR ||
+	    header->ver_min > BF_VER_MINOR) {
+		return 1;
+	}
+
+	/* set size and entrypoint */
+	(*vm)->index_code = header->entry;
+	(*vm)->code_size = header->size;
+
+	fprintf(stderr,
+		"BfExec Version %d.%d\n=> Entry: 0x%08X\n=> Size:  0x%08X\n\n",
+		header->ver_maj, header->ver_min, header->entry, header->size);
+
+	return 0;
+}
+
+boolean
+bfvm_code_load(BfVm **vm, uint8 *code, uint size)
+{
+	if (!code || !size) {
+		return 1;
+	}
+
+	/* resize vm */
+	*vm = bf_realloc(*vm, sizeof(**vm) - sizeof(char) + size, "VM Resize",
+			 "realloc for code from memory");
+
+	memcpy((*vm)->code, code, size);
+
+	return 0;
+}
+
+boolean
+bfvm_code_load_from_fileptr(BfVm **vm, FILE *fp, uint file_size)
+{
+	BfExecHeader header;
+
+	/* fail if file is too small to be executable */
+	if (file_size <= sizeof(BfExecHeader)) {
+		fclose(fp);
+		return 1;
+	}
+
+	/* read header */
+	fread(&header, sizeof(BfExecHeader), 1, fp);
+
+	if (bfvm_header_validate(vm, &header)) {
+		return 1;
+	}
+
+	/* resize vm */
+	*vm = bf_realloc(*vm, sizeof(**vm) - sizeof(char) + file_size,
+			 "VM Resize", "realloc for code from file");
+
+	/* read code into memory */
+	fread((*vm)->code, sizeof(char), header.size, fp);
+	return 0;
+}
+
+boolean
+bfvm_code_load_from_stdin(BfVm **vm)
+{
+	char	      ch;
+	BfVector      vec;
+	boolean	      ret;
+	BfExecHeader *header;
+
+	bf_vector_create(&vec);
+
+	/* append byte by byte */
+	while ((ch = fgetc(stdin)) != EOF) {
+		if (bf_vector_append(&vec, &ch, sizeof(ch))) {
+			return 1;
+		}
+	}
+
+	header = vec.data;
+
+	if (vec.size < sizeof(*header)) {
+		return 1;
+	}
+
+	ret = (bfvm_header_validate(vm, header) ||
+	       bfvm_code_load(vm, vec.data + sizeof(*header), header->size));
+
+	bf_vector_delete(&vec);
+
+	return ret;
+}
+
+boolean
 bfvm_code_load_from_file(BfVm **vm, const char *file_path)
 {
-	FILE	    *fp;
-	uint	     file_size;
-	BfExecHeader header;
+	FILE *fp;
+	uint  file_size;
 
 	/* open file */
 	fp = fopen(file_path, "rb");
@@ -37,35 +136,7 @@ bfvm_code_load_from_file(BfVm **vm, const char *file_path)
 	file_size = ftell(fp);
 	rewind(fp);
 
-	/* fail if file is too small to be executable */
-	if (file_size <= sizeof(BfExecHeader)) {
-		fclose(fp);
-		return 1;
-	}
-
-	/* read header */
-	fread(&header, sizeof(BfExecHeader), 1, fp);
-
-	if (header.magic[0] != 'B' || header.magic[1] != 'F' ||
-	    header.magic[2] != 'U' || header.magic[3] != 'N') {
-		return 1;
-	}
-
-	/* resize vm */
-	*vm = bf_realloc(*vm, sizeof(**vm) - sizeof(char) + file_size,
-			 "VM Resize", "realloc for code from file");
-
-	/* popo */
-	fprintf(stderr,
-		"BfExec Version %d.%d\n=> Entry: 0x%08X\n=> Size:  0x%08X\n\n",
-		header.ver_maj, header.ver_min, header.entry, header.size);
-
-	/* set size and entrypoint */
-	(*vm)->index_code = header.entry;
-	(*vm)->code_size = header.size;
-
-	/* read code into memory */
-	fread((*vm)->code, sizeof(char), header.size, fp);
+	bfvm_code_load_from_fileptr(vm, fp, file_size);
 
 	fclose(fp);
 	return 0;
@@ -77,15 +148,8 @@ bfvm_loop_start(BfVm *vm)
 	if (!(vm->memory[vm->index_memory])) {
 		while (vm->code[vm->index_code++] != BF_BYTE_LOOP_END) {
 		}
-
-		fputc('\n', stderr);
-
 		return;
 	}
-
-#ifdef BF_DEBUG
-	fprintf(stderr, "[%d] PUSH %d\n", vm->index_callstack, vm->index_code);
-#endif
 
 	vm->callstack[++vm->index_callstack] = vm->index_code;
 }
@@ -94,17 +158,9 @@ void
 bfvm_loop_exit(BfVm *vm)
 {
 	if (!(vm->memory[vm->index_memory])) {
-#ifdef BF_DEBUG
-		fprintf(stderr, "[%d] TRASH %d\n", vm->index_callstack,
-			vm->callstack[vm->index_callstack]);
-#endif
 		vm->index_callstack--;
 		return;
 	}
-#ifdef BF_DEBUG
-	fprintf(stderr, "[%d] BACK %d\n", vm->index_callstack,
-		vm->callstack[vm->index_callstack]);
-#endif
 	vm->index_code = vm->callstack[vm->index_callstack];
 	return;
 }

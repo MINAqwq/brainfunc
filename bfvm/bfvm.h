@@ -1,5 +1,4 @@
-#include "../shared/bfunc.h"
-#include "../shared/xmemory.h"
+#include "../shared/types.h"
 
 /* ================= Virtual Machine ================ */
 
@@ -18,6 +17,11 @@ BfVm *bfvm_create();
 
 /* free allocated memory */
 void bfvm_delete(BfVm *vm);
+
+/* load brainfunc code from stdin
+ * TODO: only read code specified by the header and not by eof
+ */
+boolean bfvm_code_load_from_stdin(BfVm **vm);
 
 /* load brainfunc code from a file directly into the code buffer */
 boolean bfvm_code_load_from_file(BfVm **vm, const char *file_path);
