@@ -25,6 +25,7 @@ typedef enum {
 	BF_BYTE_RETURN
 } BfByte;
 
+/* TODO for next version: change magic bytes to 0x0B 'F' 'U' 'N'*/
 typedef struct {
 	char  magic[4]; /* ASCII "BFUN" */
 	uint8 ver_maj;
