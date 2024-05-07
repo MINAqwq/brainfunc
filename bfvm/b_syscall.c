@@ -11,8 +11,6 @@ bfvm_syscall_open(BfVm *vm)
 	FILE *fp;
 	uint8 ret;
 
-	fprintf(stderr, "SYS_OPEN\n");
-
 	if ((vm->index_memory + 4) >= sizeof(vm->memory)) {
 		return 1;
 	}
@@ -36,8 +34,6 @@ bfvm_syscall_open(BfVm *vm)
 			return 1;
 		}
 	}
-
-	fprintf(stderr, "SYS_OPEN %s %s\n", arg1, arg2);
 
 	fp = fopen(arg1, arg2);
 	ret = !fp ? -1 : 5;
