@@ -121,3 +121,9 @@ Availabe Syscalls:
 | 0x01 | Close | | (not implemented) |
 | 0x02 | Read |  | (not implemented) |
 | 0x03 | Write |  | (not implemented) |  
+
+## TODO
+- [ ] Stack Trace for runtime error
+- [ ] Debug Symbols?
+- [ ] bfstd library
+- [ ] MORE Syscalls
