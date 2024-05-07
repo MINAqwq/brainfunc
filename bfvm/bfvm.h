@@ -28,3 +28,14 @@ boolean bfvm_code_load_from_file(BfVm **vm, const char *file_path);
 
 /* run code from entry */
 boolean bfvm_exec(BfVm *vm);
+
+/* ==================== Syscalls ==================== */
+
+typedef enum {
+	BF_SYS_OPEN = 0,
+	BF_SYS_CLOSE,
+	BF_SYS_READ,
+	BF_SYS_WRITE
+} BfSyscall;
+
+boolean bfvm_syscall_exec(BfVm *vm);

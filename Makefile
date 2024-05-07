@@ -7,6 +7,7 @@ bfc/b_main.o
 
 OBJ_BFVM=\
 bfvm/b_main.o\
+bfvm/b_syscall.o\
 bfvm/b_vm.o\
 shared/vector.o
 

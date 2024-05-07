@@ -155,6 +155,10 @@ bf_comp_map_get(char opcode)
 		return BF_BYTE_CALL;
 	case '!':
 		return BF_BYTE_RETURN;
+	case '&':
+		return BF_BYTE_COPY;
+	case '*':
+		return BF_BYTE_SYSCALL;
 	default:
 		return BF_BYTE_NONE;
 	}

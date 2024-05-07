@@ -1,6 +1,6 @@
 # BrainFunc
 
-Optimized Brainfuck with functions.
+Optimized and compiled Brainfuck superset with functions and syscall interface.
 
 
 ## Build
@@ -28,6 +28,8 @@ $ | Declare
 # | Terminate String
 ! | Return
 ; | Comment
+& | Copy
+* | Syscall
 ```
 
 
@@ -57,7 +59,7 @@ $main#
 
 ## Bytecode
 
-Brainfuck instructions will be compiled to a byte set that has a range from 0 - 10 so the BrainFunc VM is able to use jump table instead of multiple compares.
+Brainfuck instructions will be compiled to a byte set that has a range from 0 - 12 so the BrainFunc VM is able to use jump table instead of multiple compares.
 
 Calls are working with offsets. The start of compiled BrainFunc code is offset 0, where the VM will start executing. 
 
@@ -99,3 +101,15 @@ bfvm file.bfe
 # Read code from stdin (won't support read operations atm)
 cat file.bfe | bfvm -
 ```
+
+### Syscalls
+
+The BFVM exposes the OS API through own syscalls a Brainfunc program can use. Arguments are either given as biggest addressable number or c string from your bf memory array. To execute a syscall set the memory index to the syscall number followed by its arguments.
+
+Availabe Syscalls:
+| Number | Name | Arguments | Description |
+| ------ | ---- | --------- | ----------- |
+| 0x00 | Open | str_path, str_mode | Open a file |
+| 0x01 | Close | | (not implemented) |
+| 0x02 | Read |  | (not implemented) |
+| 0x03 | Write |  | (not implemented) |  

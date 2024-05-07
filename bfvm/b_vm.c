@@ -136,17 +136,31 @@ bfvm_code_load_from_file(BfVm **vm, const char *file_path)
 	file_size = ftell(fp);
 	rewind(fp);
 
-	bfvm_code_load_from_fileptr(vm, fp, file_size);
+	if (bfvm_code_load_from_fileptr(vm, fp, file_size)) {
+		return 1;
+	}
 
 	fclose(fp);
 	return 0;
+}
+
+boolean
+bfvm_memidx_inc(BfVm *vm)
+{
+	return ((++vm->index_memory) > sizeof(vm->memory));
+}
+
+boolean
+bfvm_memidx_dec(BfVm *vm)
+{
+	return ((--vm->index_memory) > sizeof(vm->memory));
 }
 
 void
 bfvm_loop_start(BfVm *vm)
 {
 	if (!(vm->memory[vm->index_memory])) {
-		while (vm->code[vm->index_code++] != BF_BYTE_LOOP_END) {
+		while (vm->code[++vm->index_code] != BF_BYTE_LOOP_END) {
 		}
 		return;
 	}
@@ -186,11 +200,44 @@ bfvm_return(BfVm *vm)
 }
 
 boolean
+bfvm_copy(BfVm *vm)
+{
+	uint8 *src;
+
+	src = &vm->memory[vm->index_memory];
+
+	++vm->index_code;
+	if (vm->index_code >= vm->code_size) {
+		return 1;
+	}
+
+	switch (vm->code[vm->index_code]) {
+	case BF_BYTE_RIGHT:
+		if (bfvm_memidx_inc(vm)) {
+			return 1;
+		}
+		break;
+	case BF_BYTE_LEFT:
+		if (bfvm_memidx_dec(vm)) {
+			return 1;
+		}
+		break;
+	default:
+		return 1;
+	}
+
+	vm->memory[vm->index_memory] = *src;
+
+	return 0;
+}
+
+boolean
 bfvm_exec(BfVm *vm)
 {
 	BfByte opcode;
 	while (1) {
 		opcode = vm->code[vm->index_code];
+		/* fprintf(stderr, "OP: %02X\n", opcode); */
 		switch (opcode) {
 		case BF_BYTE_NONE:
 			return 1;
@@ -201,14 +248,12 @@ bfvm_exec(BfVm *vm)
 			vm->memory[vm->index_memory]--;
 			break;
 		case BF_BYTE_LEFT:
-			vm->index_memory--;
-			if (vm->index_memory > sizeof(vm->memory)) {
+			if (bfvm_memidx_dec(vm)) {
 				return 1;
 			}
 			break;
 		case BF_BYTE_RIGHT:
-			vm->index_memory++;
-			if (vm->index_memory > sizeof(vm->memory)) {
+			if (bfvm_memidx_inc(vm)) {
 				return 1;
 			}
 			break;
@@ -243,6 +288,19 @@ bfvm_exec(BfVm *vm)
 			}
 
 			bfvm_return(vm);
+			break;
+		case BF_BYTE_COPY:
+			if (bfvm_copy(vm)) {
+				return 1;
+			}
+
+			break;
+		case BF_BYTE_SYSCALL:
+			fprintf(stderr, "SYSCALL\n");
+			if (bfvm_syscall_exec(vm)) {
+				return 1;
+			}
+
 			break;
 		default:
 			return 1;

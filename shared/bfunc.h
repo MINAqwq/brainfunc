@@ -1,7 +1,7 @@
 #include "types.h"
 
 #define BF_VER_MAJOR 0
-#define BF_VER_MINOR 1
+#define BF_VER_MINOR 2
 
 #define BF_SIZE_ADDRESS sizeof(uint)
 #define BF_SIZE_OPCODE	sizeof(uint8)
@@ -22,7 +22,9 @@ typedef enum {
 	BF_BYTE_PRINT,
 	BF_BYTE_READ,
 	BF_BYTE_CALL,
-	BF_BYTE_RETURN
+	BF_BYTE_RETURN,
+	BF_BYTE_COPY,
+	BF_BYTE_SYSCALL
 } BfByte;
 
 /* TODO for next version: change magic bytes to 0x0B 'F' 'U' 'N'*/

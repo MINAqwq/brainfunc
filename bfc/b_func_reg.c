@@ -41,7 +41,7 @@ bf_function_reg_add(BfFunctionRegister **reg, char *name, uint addr)
 
 	func_reg = *reg;
 
-	/* check if name is higher than allowed or if name already exists */
+	/* check if name is longer than allowed or if name already exists */
 	if (strlen(name) >= sizeof(fn->name) ||
 	    bf_function_reg_search(func_reg, name)) {
 		return 1;
