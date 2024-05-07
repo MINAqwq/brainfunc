@@ -39,21 +39,29 @@ Function names start with $ and end with #.
 To call them replace $ with @.
 
 ```bf
+; sample programm
+
 $echo#
-,.
+,.[-]
 !
 
 $printlf#
 ++++++++++.[-]
 !
-
 $main#
-++++++[>++++++++++<-]>+++++.>
-@printlf#>
-@echo#<
+++++++[>+++++++++++<-]>+++. ; E:  70
++<++++[>++++++++++<-]>.     ; n: 110
+++++++.                     ; t: 116
+---------------.            ; e: 101
+; I wanted to write "Enter a symbol:" but im too lazy so it's just "Ente"
+
+; copy e to next location
+&>.
+>
+@printlf#
+@echo#
 @printlf#
 !
-
 ```
 
 
