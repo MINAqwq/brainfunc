@@ -27,3 +27,25 @@ bfvm: $(OBJ_BFVM) $(OBJ_SHARED)
 .PHONY:
 clean:
 	rm $(OBJ_BFC) $(OBJ_BFVM) $(OBJ_SHARED) bfc/bfc bfvm/bfvm
+
+.PHONY:
+install: install_bfc install_bfvm
+
+.PHONY:
+uninstall: uninstall_bfc uninstall_bfvm
+
+.PHONY:
+install_bfc: bfc
+	cp -v bfc/bfc /usr/bin/bfc
+
+.PHONY:
+uninstall_bfc:
+	rm -v /usr/bin/bfc
+
+.PHONY:
+install_bfvm: bfvm
+	cp -v bfvm/bfvm /usr/bin/bfvm
+
+.PHONY:
+uninstall_bfvm:
+	rm -v /usr/bin/bfvm
