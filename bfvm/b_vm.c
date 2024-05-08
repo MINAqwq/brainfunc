@@ -144,28 +144,43 @@ bfvm_code_load_from_file(BfVm **vm, const char *file_path)
 	return 0;
 }
 
-boolean
+void
 bfvm_memidx_inc(BfVm *vm)
 {
-	return ((++vm->index_memory) > sizeof(vm->memory));
+	vm->index_memory = (vm->index_memory + 1 >= sizeof(vm->memory))
+			       ? 0
+			       : vm->index_memory + 1;
 }
 
-boolean
+void
 bfvm_memidx_dec(BfVm *vm)
 {
-	return ((--vm->index_memory) > sizeof(vm->memory));
+	vm->index_memory = (vm->index_memory - 1 >= sizeof(vm->memory))
+			       ? 0
+			       : vm->index_memory - 1;
 }
 
 void
 bfvm_loop_start(BfVm *vm)
 {
-	if (!(vm->memory[vm->index_memory])) {
-		while (vm->code[++vm->index_code] != BF_BYTE_LOOP_END) {
-		}
+	uint i;
+
+	if (vm->memory[vm->index_memory]) {
+		vm->callstack[++vm->index_callstack] = vm->index_code;
 		return;
 	}
 
-	vm->callstack[++vm->index_callstack] = vm->index_code;
+	i = 1;
+search_exit:
+	while (vm->code[++vm->index_code] != BF_BYTE_LOOP_END) {
+		if (vm->code[vm->index_code] == BF_BYTE_LOOP_START) {
+			i++;
+		}
+	}
+
+	if (--i) {
+		goto search_exit;
+	}
 }
 
 void
@@ -175,6 +190,7 @@ bfvm_loop_exit(BfVm *vm)
 		vm->index_callstack--;
 		return;
 	}
+
 	vm->index_code = vm->callstack[vm->index_callstack];
 	return;
 }
@@ -213,14 +229,10 @@ bfvm_copy(BfVm *vm)
 
 	switch (vm->code[vm->index_code]) {
 	case BF_BYTE_RIGHT:
-		if (bfvm_memidx_inc(vm)) {
-			return 1;
-		}
+		bfvm_memidx_inc(vm);
 		break;
 	case BF_BYTE_LEFT:
-		if (bfvm_memidx_dec(vm)) {
-			return 1;
-		}
+		bfvm_memidx_dec(vm);
 		break;
 	default:
 		return 1;
@@ -248,14 +260,10 @@ bfvm_exec(BfVm *vm)
 			vm->memory[vm->index_memory]--;
 			break;
 		case BF_BYTE_LEFT:
-			if (bfvm_memidx_dec(vm)) {
-				return 1;
-			}
+			bfvm_memidx_dec(vm);
 			break;
 		case BF_BYTE_RIGHT:
-			if (bfvm_memidx_inc(vm)) {
-				return 1;
-			}
+			bfvm_memidx_inc(vm);
 			break;
 		case BF_BYTE_LOOP_START:
 			if ((vm->index_callstack + 1) >
