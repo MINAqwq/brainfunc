@@ -37,6 +37,7 @@ uninstall: uninstall_bfc uninstall_bfvm
 
 .PHONY:
 install_bfc: bfc
+	strip bfc/bfc
 	cp -v bfc/bfc /usr/bin/bfc
 
 .PHONY:
@@ -45,6 +46,7 @@ uninstall_bfc:
 
 .PHONY:
 install_bfvm: bfvm
+	strip bfvm/bfvm
 	cp -v bfvm/bfvm /usr/bin/bfvm
 
 .PHONY:
