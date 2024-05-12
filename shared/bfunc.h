@@ -1,5 +1,8 @@
 #include "types.h"
 
+#ifndef BF_SHARED_BFUNC_H
+#define BF_SHARED_BFUNC_H
+
 #define BF_VER_MAJOR 0
 #define BF_VER_MINOR 2
 
@@ -35,3 +38,5 @@ typedef struct {
 	uint  size;  /* code size after header */
 	uint  entry; /* entry point address */
 } __attribute__((packed)) BfExecHeader;
+
+#endif

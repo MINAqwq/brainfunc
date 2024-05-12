@@ -1,7 +1,25 @@
 #include "bfvm.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+void
+runtime_error(BfVm *vm)
+{
+	fputs("=== YOUR CODE IS BUGGY BTW ====\n", stderr);
+	while (vm->index_callstack) {
+		fprintf(stderr, "[%08X]\n",
+			vm->callstack[vm->index_callstack--]);
+	}
+
+	fprintf(stderr,
+		"======== RUNTIME ERROR ========\nIP: 0x%08X\nOP: 0x%02X\nMI: "
+		"0x%04X\nCI: %d\n",
+		vm->index_code, vm->code[vm->index_code], vm->index_memory,
+		vm->index_callstack);
+	exit(2);
+}
 
 int
 main(int argc, char **argv)
@@ -32,11 +50,7 @@ main(int argc, char **argv)
 
 exec:
 	if (bfvm_exec(vm)) {
-		fprintf(stderr,
-			"==== RUNTIME ERROR ====\nIP: 0x%08X\nOP: 0x%02X\nMI: "
-			"0x%04X\nCI: %d\n",
-			vm->index_code, vm->code[vm->index_code],
-			vm->index_memory, vm->index_callstack);
+		runtime_error(vm);
 	}
 
 	bfvm_delete(vm);

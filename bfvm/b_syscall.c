@@ -38,8 +38,6 @@ bfvm_syscall_open(BfVm *vm)
 	fp = fopen(arg1, arg2);
 	ret = !fp ? -1 : 5;
 
-	fprintf(stderr, "%d\n", ret);
-
 	/* save return value in bf memory */
 	vm->memory[vm->index_memory] = ret;
 

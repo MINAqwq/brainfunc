@@ -123,7 +123,7 @@ Availabe Syscalls:
 | 0x03 | Write |  | (not implemented) |  
 
 ## TODO
-- [ ] Stack Trace for runtime error
+- [x] Stack Trace for runtime error
 - [ ] Debug Symbols?
 - [ ] bfstd library
 - [ ] MORE Syscalls

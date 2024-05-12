@@ -304,7 +304,6 @@ bfvm_exec(BfVm *vm)
 
 			break;
 		case BF_BYTE_SYSCALL:
-			fprintf(stderr, "SYSCALL\n");
 			if (bfvm_syscall_exec(vm)) {
 				return 1;
 			}
