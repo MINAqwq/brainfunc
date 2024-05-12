@@ -1,12 +1,8 @@
 .vscode
 .cache
-build
+bin
 
 *.o
 *.bf
 *.bfe
 
-test.bf
-
-bfc/bfc
-bfvm/bfvm
