@@ -24,7 +24,7 @@ bf_vector_delete(BfVector *v)
 }
 
 boolean
-bf_vector_insert(BfVector *v, void *data, uint64 data_size, uint64 pos)
+bf_vector_insert(BfVector *v, const void *data, uint64 data_size, uint64 pos)
 {
 	uint64 i;
 
@@ -55,7 +55,7 @@ bf_vector_insert(BfVector *v, void *data, uint64 data_size, uint64 pos)
 }
 
 boolean
-bf_vector_append(BfVector *v, void *data, uint64 data_size)
+bf_vector_append(BfVector *v, const void *data, uint64 data_size)
 {
 	return bf_vector_insert(v, data, data_size, v->size);
 }
