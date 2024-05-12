@@ -9,6 +9,8 @@
 #define OFFSET_LINE                                                            \
 	(sizeof(const char *) + sizeof(const char *) + sizeof(const char *))
 
+#ifndef BF_DEBUG
+
 void *
 bf_xmalloc(uint size)
 {
@@ -49,6 +51,8 @@ bf_xrealloc(void *ptr_old, uint size_new)
 
 	return ptr_old;
 }
+
+#else
 
 void *
 bf_xmalloc_debug(uint size, const char *name, const char *description,
@@ -124,3 +128,5 @@ bf_free_debug(void *ptr, const char *file, int line)
 
 	free(ptr - sizeof(*dbg));
 }
+
+#endif
