@@ -14,20 +14,25 @@ shared/vector.o
 OBJ_SHARED=\
 shared/x_memory.o
 
+OUT_DIR=bin
+
 all: bfc bfvm
+
+out_dir:
+	mkdir -p $(OUT_DIR)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-bfc: $(OBJ_BFC) $(OBJ_SHARED)
-	$(CC) $(OBJ_BFC) $(OBJ_SHARED) -o $@/$@
+bfc: $(OBJ_BFC) $(OBJ_SHARED) out_dir
+	$(CC) $(OBJ_BFC) $(OBJ_SHARED) -o $(OUT_DIR)/$@
 
-bfvm: $(OBJ_BFVM) $(OBJ_SHARED)
-	$(CC) $(OBJ_BFVM) $(OBJ_SHARED) -o $@/$@
+bfvm: $(OBJ_BFVM) $(OBJ_SHARED) out_dir
+	$(CC) $(OBJ_BFVM) $(OBJ_SHARED) -o $(OUT_DIR)/$@
 
 .PHONY:
 clean:
-	rm $(OBJ_BFC) $(OBJ_BFVM) $(OBJ_SHARED) bfc/bfc bfvm/bfvm
+	rm $(OBJ_BFC) $(OBJ_BFVM) $(OBJ_SHARED) $(OUT_DIR)/bfc $(OUT_DIR)/bfvm
 
 .PHONY:
 install: install_bfc install_bfvm
@@ -37,8 +42,8 @@ uninstall: uninstall_bfc uninstall_bfvm
 
 .PHONY:
 install_bfc: bfc
-	strip bfc/bfc
-	cp -v bfc/bfc /usr/bin/bfc
+	strip $(OUT_DIR)/bfc
+	cp -v $(OUT_DIR)/bfc /usr/bin/bfc
 
 .PHONY:
 uninstall_bfc:
@@ -46,8 +51,8 @@ uninstall_bfc:
 
 .PHONY:
 install_bfvm: bfvm
-	strip bfvm/bfvm
-	cp -v bfvm/bfvm /usr/bin/bfvm
+	strip $(OUT_DIR)/bfvm
+	cp -v $(OUT_DIR)/bfvm /usr/bin/bfvm
 
 .PHONY:
 uninstall_bfvm:
