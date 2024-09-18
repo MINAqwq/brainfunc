@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS=-std=c89 -O2 -Wall -Wextra -Werror -ansi
+CFLAGS=-std=c89 -O2 -Wall -Wextra -Werror -ansi -Wno-unused-result
 OBJ_BFC=\
 bfc/b_compiler.o \
 bfc/b_func_reg.o \
